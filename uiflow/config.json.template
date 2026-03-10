@@ -1,0 +1,16 @@
+{
+    "client_id": "m5fire-office-room",
+    "location": "Office Room",
+    "wifi_ssid": "<WIFI>",
+    "wifi_pass": "<WIFI_PASSWORD>",
+    "mqtt_host": "deneb.local",
+    "weather_api": "<API_KEY>",
+    "city": "<CITY>",
+    "_language_options": "EN/FR/ES/PT",
+    "language": "FR",
+    "date_format": "DD.MM.YYYY",
+    "mqtt_interval": 10,
+    "debug": true,
+    "_force_day_night_options": "auto/day/night",
+    "force_day_night": "auto"
+}

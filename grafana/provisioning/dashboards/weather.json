@@ -1,0 +1,161 @@
+{
+  "title": "M5Stack Weather Stations",
+  "uid": "affjdy1jwidc0e",
+  "schemaVersion": 38,
+  "version": 4,
+  "templating": {
+    "list": [
+      {
+        "name": "station",
+        "type": "query",
+        "datasource": {
+          "type": "influxdb",
+          "uid": "influxdb"
+        },
+        "query": "SHOW TAG VALUES FROM \"weather\" WITH KEY = \"station\"",
+        "includeAll": true,
+        "multi": true,
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "refresh": 2
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Temperature",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "influxdb"
+          },
+          "rawQuery": true,
+          "query": "SELECT mean(\"value\") FROM \"weather\" WHERE (\"metric\" = 'temp') AND (\"station\" =~ /^$station$/) AND $timeFilter GROUP BY time($__interval), \"station\" fill(previous)",
+          "resultFormat": "time_series",
+          "alias": "$tag_station"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "pointSize": 1,
+            "showPoints": "never",
+            "spanNulls": true
+          },
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Humidity",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "influxdb"
+          },
+          "rawQuery": true,
+          "query": "SELECT mean(\"value\") FROM \"weather\" WHERE (\"metric\" = 'hum') AND (\"station\" =~ /^$station$/) AND $timeFilter GROUP BY time($__interval), \"station\" fill(previous)",
+          "resultFormat": "time_series",
+          "alias": "$tag_station"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "humidity",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "pointSize": 1,
+            "showPoints": "never",
+            "spanNulls": true
+          },
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Pressure",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "influxdb"
+          },
+          "rawQuery": true,
+          "query": "SELECT mean(\"value\") FROM \"weather\" WHERE (\"metric\" = 'press') AND (\"station\" =~ /^$station$/) AND $timeFilter GROUP BY time($__interval), \"station\" fill(previous)",
+          "resultFormat": "time_series",
+          "alias": "$tag_station"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pressurehpa",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "pointSize": 1,
+            "showPoints": "never",
+            "spanNulls": true
+          },
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 24,
+        "h": 8
+      }
+    }
+  ]
+}
