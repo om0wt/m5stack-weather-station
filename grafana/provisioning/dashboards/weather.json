@@ -2,7 +2,7 @@
   "title": "M5Stack Weather Stations",
   "uid": "affjdy1jwidc0e",
   "schemaVersion": 38,
-  "version": 4,
+  "version": 10,
   "templating": {
     "list": [
       {
@@ -39,7 +39,7 @@
             "uid": "influxdb"
           },
           "rawQuery": true,
-          "query": "SELECT mean(\"value\") FROM \"weather\" WHERE (\"metric\" = 'temp') AND (\"station\" =~ /^$station$/) AND $timeFilter GROUP BY time($__interval), \"station\" fill(previous)",
+          "query": "SELECT mean(\"value\") FROM \"weather\" WHERE (\"metric\" = 'temp') AND (\"station\" =~ /^$station$/) AND $timeFilter GROUP BY time($__interval), \"station\" fill(null)",
           "resultFormat": "time_series",
           "alias": "$tag_station"
         }
@@ -54,7 +54,7 @@
             "fillOpacity": 10,
             "pointSize": 1,
             "showPoints": "never",
-            "spanNulls": true
+            "spanNulls": 300000
           },
           "color": {
             "mode": "palette-classic"
@@ -83,7 +83,7 @@
             "uid": "influxdb"
           },
           "rawQuery": true,
-          "query": "SELECT mean(\"value\") FROM \"weather\" WHERE (\"metric\" = 'hum') AND (\"station\" =~ /^$station$/) AND $timeFilter GROUP BY time($__interval), \"station\" fill(previous)",
+          "query": "SELECT mean(\"value\") FROM \"weather\" WHERE (\"metric\" = 'hum') AND (\"station\" =~ /^$station$/) AND $timeFilter GROUP BY time($__interval), \"station\" fill(null)",
           "resultFormat": "time_series",
           "alias": "$tag_station"
         }
@@ -98,7 +98,7 @@
             "fillOpacity": 10,
             "pointSize": 1,
             "showPoints": "never",
-            "spanNulls": true
+            "spanNulls": 300000
           },
           "color": {
             "mode": "palette-classic"
@@ -127,7 +127,7 @@
             "uid": "influxdb"
           },
           "rawQuery": true,
-          "query": "SELECT mean(\"value\") FROM \"weather\" WHERE (\"metric\" = 'press') AND (\"station\" =~ /^$station$/) AND $timeFilter GROUP BY time($__interval), \"station\" fill(previous)",
+          "query": "SELECT mean(\"value\") FROM \"weather\" WHERE (\"metric\" = 'press') AND (\"station\" =~ /^$station$/) AND $timeFilter GROUP BY time($__interval), \"station\" fill(null)",
           "resultFormat": "time_series",
           "alias": "$tag_station"
         }
@@ -142,7 +142,7 @@
             "fillOpacity": 10,
             "pointSize": 1,
             "showPoints": "never",
-            "spanNulls": true
+            "spanNulls": 300000
           },
           "color": {
             "mode": "palette-classic"

@@ -686,7 +686,7 @@ while True:
         # Update the display with formatted values
         tval.setText(str(round(temp, 1)) + "C")
         hval.setText(str(round(hum, 1)) + "%")
-        pval.setText(str(round(pres, 1)) + "hPa")
+        pval.setText("%.2f" % pres + "hPa")
 
         last_sensor = now
 
