@@ -2,6 +2,8 @@
 
 A complete weather station system built on M5Stack Fire with ENV sensor, featuring animated weather display, OpenWeatherMap integration, and a full monitoring backend with Grafana dashboards.
 
+![M5Stack Weather Station - night mode with moon, constellations, and ENV sensor](docs/screenshot.jpeg)
+
 ## Features
 
 - **Real-time sensor readings**: Temperature, humidity, pressure from ENV unit (DHT12 + BMP280)
