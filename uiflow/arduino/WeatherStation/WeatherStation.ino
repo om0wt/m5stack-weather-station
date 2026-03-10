@@ -20,6 +20,7 @@
 //
 // Screen layout (320x240 pixels):
 //   Top row:     day name, date, time
+//   Second row:  station ID (centered) + battery indicator (right)
 //   Left side:   weather animation (sun/moon/clouds/rain/stars)
 //   Right side:  sensor values (T, H, P) + internet weather
 //   Bottom:      pressure history bar graph
@@ -83,6 +84,12 @@
 #define C_RAIN       0x445F   // 0x4488FF - blue rain drops
 #define C_BAR        0x355F   // 0x33AAFF - pressure bars
 
+// Battery indicator
+#define C_BAT_OUTLINE 0x8410  // 0x888888 - grey outline
+#define C_BAT_GREEN   0x0660  // 0x00CC00 - >50%
+#define C_BAT_YELLOW  0xCE60  // 0xCCCC00 - 20-50%
+#define C_BAT_RED     0xC800  // 0xCC0000 - <20%
+
 // ============================================================
 // CONFIGURATION STRUCTURE
 // ============================================================
@@ -145,6 +152,7 @@ unsigned long last_sensor = 0;   // Sensor read: every 5 seconds
 unsigned long last_log = 0;      // Pressure log: every 5 minutes
 unsigned long last_api = 0;      // API fetch: every 10 minutes
 unsigned long last_mqtt = 0;     // MQTT publish: configurable
+unsigned long last_bat = 0;      // Battery indicator: every 30 seconds
 
 // --- Rain animation ---
 // 6 rain drops with tracked positions (x, y)
@@ -568,6 +576,34 @@ void drawLabel(int x, int y, String text, String &prev, uint16_t color) {
 }
 
 // ============================================================
+// BATTERY INDICATOR
+// ============================================================
+// Small graphical battery icon in upper right, beneath time.
+// Body: 24x10 outline, tip: 3x4, fill: up to 20x6 pixels.
+
+void drawBattery() {
+  int8_t level = M5.Power.getBatteryLevel();  // 0-100 or -1 if unknown
+  if (level < 0) level = 0;
+
+  // Draw battery outline (only needs drawing once, but it's cheap)
+  M5.Lcd.drawRect(274, 28, 24, 10, C_BAT_OUTLINE);  // body outline
+  M5.Lcd.fillRect(298, 31, 3, 4, C_BAT_OUTLINE);    // positive tip
+
+  // Fill width: 0-20 pixels based on percentage
+  int w = max(1, (int)level * 20 / 100);
+
+  // Color based on level
+  uint16_t color;
+  if (level > 50)      color = C_BAT_GREEN;
+  else if (level > 20) color = C_BAT_YELLOW;
+  else                 color = C_BAT_RED;
+
+  // Clear old fill and draw new
+  M5.Lcd.fillRect(276, 30, 20, 6, C_BLACK);  // clear
+  M5.Lcd.fillRect(276, 30, w, 6, color);     // fill
+}
+
+// ============================================================
 // FETCH WEATHER FROM OPENWEATHERMAP API
 // ============================================================
 
@@ -770,6 +806,7 @@ void setup() {
 
   drawWeather(getWeatherState());
   drawPressureGraph();
+  drawBattery();
 
   Serial.println(String("== Running (debug ") + (cfg.debug ? "ON" : "OFF") + ") ==");
 }
@@ -840,6 +877,12 @@ void loop() {
     fetchWeather();
     drawWeather(getWeatherState());
     last_api = now;
+  }
+
+  // --- UPDATE BATTERY INDICATOR (every 30 seconds) ---
+  if (now - last_bat > 30000) {
+    drawBattery();
+    last_bat = now;
   }
 
   // --- PUBLISH MQTT (configurable interval) ---

@@ -76,6 +76,8 @@ Edit `config.json`:
 | `_force_day_night_options` | Comment field listing available force_day_night values (not used by firmware) |
 | `force_day_night` | `auto` = based on time, `day` = always day mode, `night` = always night mode |
 
+> **Battery indicator**: A small graphical battery icon is displayed in the upper right corner beneath the time. It updates every 30 seconds and is color-coded: green (>50%), yellow (20-50%), red (<20%).
+
 ## Step 2: Flash UIFlow Firmware
 
 If your M5Stack doesn't already have UIFlow firmware:

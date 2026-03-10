@@ -9,6 +9,7 @@
 #
 # Screen layout (320x240 pixels):
 #   Top row:     date and time
+#   Second row:  station ID (centered) + battery indicator (right)
 #   Left side:   weather animation (sun/moon/clouds/rain/stars)
 #   Right side:  sensor values (T, H, P) + internet weather
 #   Bottom:      pressure history bar graph
@@ -228,6 +229,34 @@ station_label = M5TextBox(_sid_x,25,CLIENT_ID,lcd.FONT_DejaVu18,0xcc9933)
 # Shows current weather from the internet (e.g. "KE:Clear")
 weather_label = M5TextBox(190,168,"",lcd.FONT_DejaVu18,0x00ccff)
 
+# --- BATTERY INDICATOR (upper right, beneath time) ---
+# Small graphical battery: outline + tip + fill bar
+bat_body = M5Rect(274, 28, 24, 10, 0x000000, 0x888888)   # outline (grey border)
+bat_tip  = M5Rect(298, 31, 3, 4, 0x888888, 0x888888)      # positive terminal
+bat_fill = M5Rect(276, 30, 20, 6, 0x00cc00, 0x00cc00)     # fill bar (green)
+
+def update_battery():
+    """Read battery voltage and update the indicator."""
+    try:
+        v = power.getBatVoltage()
+        # Li-Po: 4.2V = 100%, 3.0V = 0%
+        pct = min(100, max(0, int((v - 3.0) / 1.2 * 100)))
+        # Fill width: 0-20 pixels based on percentage
+        w = max(1, int(pct * 20 / 100))
+        # Color: green > 50%, yellow 20-50%, red < 20%
+        if pct > 50:
+            color = 0x00cc00   # green
+        elif pct > 20:
+            color = 0xcccc00   # yellow
+        else:
+            color = 0xcc0000   # red
+        # Clear old fill and draw new
+        bat_fill.setSize(width=w, height=6)
+        bat_fill.setBgColor(color)
+        bat_fill.setBorderColor(color)
+    except:
+        pass  # power API not available (e.g. USB powered)
+
 # ============================================================
 # WEATHER GRAPHICS
 # ============================================================
@@ -357,6 +386,7 @@ pressure_history = [initial_pressure] * 20
 last_sensor = 0    # Sensor reading:       every 5 seconds
 last_log = 0       # Pressure history log: every 5 minutes (300000 ms)
 last_api = 0       # Internet weather API: every 10 minutes (600000 ms)
+last_bat = 0       # Battery indicator:    every 30 seconds (30000 ms)
 # MQTT publish interval from config (in seconds, default 10)
 mqtt_interval = cfg.get("mqtt_interval", 10) * 1000  # Convert to milliseconds
 last_mqtt = 0
@@ -623,6 +653,9 @@ except Exception as e:
 # Show the weather animation based on what we know
 draw_weather(get_weather_state())
 
+# Initial battery reading
+update_battery()
+
 print("== Running (debug %s) ==" % ("ON" if DEBUG else "OFF"))
 
 # ============================================================
@@ -703,6 +736,11 @@ while True:
         draw_weather(get_weather_state())
 
         last_api = now
+
+    # --- UPDATE BATTERY INDICATOR (every 30 seconds) ---
+    if time.ticks_diff(now, last_bat) > 30000:
+        update_battery()
+        last_bat = now
 
     # --- SEND DATA VIA MQTT (configurable interval) ---
     if sensor_ok and time.ticks_diff(now, last_mqtt) > mqtt_interval:

@@ -13,6 +13,7 @@ A complete weather station system built on M5Stack Fire with ENV sensor, featuri
 - **Pressure history**: Bottom bar graph showing ~100 minutes of pressure trend
 - **Multi-station support**: Multiple M5Stack devices report to the same backend, each with unique station ID
 - **Multi-language**: Day names in English, French, Spanish, Portuguese
+- **Battery indicator**: Small graphical battery icon with color-coded charge level (green/yellow/red)
 - **Splash screen**: Golden sunrise photo with init status updates
 - **Grafana dashboard**: Auto-provisioned dashboard with temperature, humidity, pressure panels and station selector
 
@@ -318,7 +319,7 @@ docker compose exec influxdb influx -execute 'CREATE DATABASE weather'
 ```
 +------------------------------------------+
 | Lundi    10.03.2026         14:35        |  <- Day, Date, Time
-|      m5fire-living-room                  |  <- Station ID (gold)
+|      m5fire-living-room       [===]      |  <- Station ID (gold) + Battery
 |                                          |
 |   [Sun/Moon/        T: 22.5C             |
 |    Cloud/Rain        H: 45.2%            |
