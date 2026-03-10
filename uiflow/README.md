@@ -48,10 +48,12 @@ Edit `config.json`:
     "mqtt_host": "your-server.local",
     "weather_api": "your_openweathermap_api_key",
     "city": "London",
+    "_language_options": "EN/FR/ES/PT",
     "language": "EN",
     "date_format": "DD.MM.YYYY",
     "mqtt_interval": 10,
     "debug": false,
+    "_force_day_night_options": "auto/day/night",
     "force_day_night": "auto"
 }
 ```
@@ -66,10 +68,12 @@ Edit `config.json`:
 | `mqtt_host` | Hostname or IP of your MQTT broker (Mosquitto) |
 | `weather_api` | OpenWeatherMap API key. Get one free at [openweathermap.org/api](https://openweathermap.org/api) |
 | `city` | City name for weather lookup (e.g. `Kosice`, `London`, `New York`) |
+| `_language_options` | Comment field listing available language values (not used by firmware) |
 | `language` | Day names language: `EN`, `FR`, `ES`, or `PT` |
 | `date_format` | One of: `DD.MM.YYYY`, `DD/MM/YYYY`, `MM/DD/YYYY`, `YYYY-MM-DD` |
 | `mqtt_interval` | Seconds between MQTT publishes (default: 10) |
 | `debug` | `true` = verbose serial output, `false` = minimal output |
+| `_force_day_night_options` | Comment field listing available force_day_night values (not used by firmware) |
 | `force_day_night` | `auto` = based on time, `day` = always day mode, `night` = always night mode |
 
 ## Step 2: Flash UIFlow Firmware
